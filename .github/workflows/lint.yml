@@ -35,7 +35,7 @@ jobs:
           yamllint -c .shared/linters/.yamllint .
 
       - name: actionlint
-        uses: rhysd/actionlint@v1.7.7
+        uses: rhysd/actionlint@v1.7.12
 
       - name: shellcheck
         if: inputs.shellcheck
