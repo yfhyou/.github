@@ -1,0 +1,56 @@
+name: Lint (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      shellcheck:
+        description: Run shellcheck on shell scripts
+        type: boolean
+        default: false
+      ansible-lint:
+        description: Run ansible-lint
+        type: boolean
+        default: false
+      hadolint:
+        description: Run hadolint on Dockerfiles
+        type: boolean
+        default: false
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch shared linter configs
+        uses: actions/checkout@v4
+        with:
+          repository: yfhyou/.github
+          path: .shared
+          sparse-checkout: linters/
+
+      - name: yamllint
+        run: |
+          pip install --quiet yamllint
+          yamllint -c .shared/linters/.yamllint .
+
+      - name: actionlint
+        uses: rhysd/actionlint@v1.7.7
+
+      - name: shellcheck
+        if: inputs.shellcheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: .
+          additional_files: "*.sh"
+          ignore_paths: .shared
+
+      - name: ansible-lint
+        if: inputs.ansible-lint
+        uses: ansible/ansible-lint@v24.12.2
+
+      - name: hadolint
+        if: inputs.hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
