@@ -1,0 +1,43 @@
+name: Build and push devcontainer base image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - devcontainer/Dockerfile
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/yfhyou/homelab-base
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract Ubuntu version from Dockerfile
+        id: ubuntu_ver
+        run: |
+          echo "version=$(grep '^FROM ubuntu:' devcontainer/Dockerfile | cut -d: -f2)" >> $GITHUB_OUTPUT
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: devcontainer
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.ubuntu_ver.outputs.version }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
