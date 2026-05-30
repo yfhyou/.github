@@ -47,7 +47,7 @@ jobs:
 
       - name: ansible-lint
         if: inputs.ansible-lint
-        uses: ansible/ansible-lint@v24.12.2
+        uses: ansible/ansible-lint@v26.4.0
 
       - name: hadolint
         if: inputs.hadolint
