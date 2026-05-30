@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     npm \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid ${USER_GID} ${USERNAME} \
+RUN groupmod --new-name ${USERNAME} "$(getent group ${USER_GID} | cut -d: -f1)" \
     && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
     && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
