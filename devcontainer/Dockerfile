@@ -28,7 +28,7 @@ RUN pip3 install --no-cache-dir --break-system-packages \
 
 # actionlint
 RUN curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
-    | bash -s -- -b /usr/local/bin
+    | bash -s -- latest /usr/local/bin
 
 # hadolint
 RUN curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
