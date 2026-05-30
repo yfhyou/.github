@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN groupmod --new-name ${USERNAME} "$(getent group ${USER_GID} | cut -d: -f1)" \
-    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+    && usermod --login ${USERNAME} --home /home/${USERNAME} --move-home \
+       "$(getent passwd ${USER_UID} | cut -d: -f1)" \
     && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
