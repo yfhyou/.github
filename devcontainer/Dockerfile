@@ -1,0 +1,46 @@
+FROM ubuntu:26.04
+
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sudo \
+    git \
+    curl \
+    ca-certificates \
+    shellcheck \
+    python3-pip \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+    && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
+
+RUN pip3 install --no-cache-dir --break-system-packages \
+    yamllint \
+    ansible-lint \
+    pre-commit
+
+# actionlint
+RUN curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+    | bash -s -- -b /usr/local/bin
+
+# hadolint
+RUN curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
+    -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
+
+# gh CLI
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    > /etc/apt/sources.list.d/github-cli.list \
+    && apt-get update && apt-get install -y gh && rm -rf /var/lib/apt/lists/*
+
+# commitlint
+RUN npm install -g @commitlint/cli @commitlint/config-conventional
+
+USER ${USERNAME}
