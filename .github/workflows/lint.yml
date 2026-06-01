@@ -19,8 +19,13 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Fetch shared linter configs
         uses: actions/checkout@v6
@@ -28,6 +33,11 @@ jobs:
           repository: yfhyou/.github
           path: .shared
           sparse-checkout: linters/
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: yamllint
         run: |
