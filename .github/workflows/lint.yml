@@ -42,7 +42,9 @@ jobs:
       - name: yamllint
         run: |
           pip install --quiet yamllint
-          yamllint -c .shared/linters/.yamllint .
+          CONFIG=".shared/linters/.yamllint"
+          [ -f .yamllint ] && CONFIG=".yamllint"
+          yamllint -c "$CONFIG" .
 
       - name: actionlint
         uses: rhysd/actionlint@v1.7.12
