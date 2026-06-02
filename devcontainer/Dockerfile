@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     ca-certificates \
+    gnupg \
     openssh-client \
     shellcheck \
     python3-pip \
