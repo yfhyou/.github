@@ -27,7 +27,9 @@ RUN groupmod --new-name ${USERNAME} "$(getent group ${USER_GID} | cut -d: -f1)" 
 RUN pip3 install --no-cache-dir --break-system-packages \
     yamllint \
     ansible-lint \
-    pre-commit
+    pre-commit \
+    proxmoxer \
+    requests
 
 # actionlint
 RUN curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
