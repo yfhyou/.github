@@ -65,6 +65,17 @@ jobs:
             ansible-galaxy collection install -r ansible/requirements.yml
           fi
 
+      - name: Create dummy vault password file
+        if: inputs.ansible-lint
+        run: |
+          if [ -f ansible.cfg ]; then
+            vault_pass=$(awk -F'=' '/^vault_password_file/{gsub(/ /,"",$2); print $2}' ansible.cfg)
+            if [ -n "$vault_pass" ] && [ ! -f "$vault_pass" ]; then
+              mkdir -p "$(dirname "$vault_pass")"
+              echo "ci-dummy" > "$vault_pass"
+            fi
+          fi
+
       - name: ansible-lint
         if: inputs.ansible-lint
         uses: ansible/ansible-lint@v26.4.0
