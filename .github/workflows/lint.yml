@@ -57,12 +57,20 @@ jobs:
           additional_files: "*.sh"
           ignore_paths: .shared
 
-      - name: Install Galaxy collections
+      # Do NOT install ansible-core here. The ansible-lint action installs it via
+      # `uv tool install --with-executables-from ansible-core`, and uv refuses to
+      # overwrite executables that already exist on PATH — the job dies with
+      # "Executables already exist: ansible, ansible-config, ...". Hand the
+      # requirements file to the action instead; it runs `ansible-galaxy install`
+      # itself, after its own install, and picks up roles as well as collections.
+      - name: Detect Galaxy requirements
+        id: galaxy
         if: inputs.ansible-lint
         run: |
           if [ -f ansible/requirements.yml ]; then
-            pip install --quiet ansible-core
-            ansible-galaxy collection install -r ansible/requirements.yml
+            echo "requirements=ansible/requirements.yml" >> "$GITHUB_OUTPUT"
+          else
+            echo "requirements=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create dummy vault password file
@@ -79,6 +87,8 @@ jobs:
       - name: ansible-lint
         if: inputs.ansible-lint
         uses: ansible/ansible-lint@v26.8.0
+        with:
+          requirements_file: ${{ steps.galaxy.outputs.requirements }}
 
       - name: hadolint
         if: inputs.hadolint
