@@ -1,0 +1,26 @@
+---
+# Root-level copy of this repo's own linters/.yamllint — keep the two in sync.
+# Required locally: the pre-commit yamllint hook can only discover rules from a
+# file in the repo root, and without it falls back to yamllint defaults (80 cols),
+# which do not match what CI enforces.
+extends: default
+
+ignore: |
+  .shared/
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  truthy:
+    allowed-values: ["true", "false", "yes", "no", "on", "off"]
+  comments:
+    min-spaces-from-content: 1
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
+  comments-indentation: false
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true

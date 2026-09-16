@@ -4,6 +4,9 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
 
+# Piped RUN steps below must fail on the first failing command, not the last.
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     git \

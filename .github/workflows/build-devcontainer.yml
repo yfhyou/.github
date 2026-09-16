@@ -1,3 +1,4 @@
+---
 name: Build and push devcontainer base image
 
 on:
@@ -24,7 +25,7 @@ jobs:
       - name: Extract Ubuntu version from Dockerfile
         id: ubuntu_ver
         run: |
-          echo "version=$(grep '^FROM ubuntu:' devcontainer/Dockerfile | cut -d: -f2)" >> $GITHUB_OUTPUT
+          echo "version=$(grep '^FROM ubuntu:' devcontainer/Dockerfile | cut -d: -f2)" >> "$GITHUB_OUTPUT"
 
       - uses: docker/login-action@v4
         with:

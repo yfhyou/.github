@@ -1,0 +1,17 @@
+---
+# Only Dockerfile in the estate: devcontainer/Dockerfile, the base image every
+# repo's devcontainer builds from.
+ignored:
+  # Version pinning for apt, pip and npm. Deliberately not done: this is a
+  # rolling dev image, and Renovate tracks the one version that matters — the
+  # ubuntu:<release> tag in FROM. Pinning every package would freeze the image
+  # at whatever was current on the day it was written.
+  - DL3008  # apt-get install <pkg>=<version>
+  - DL3013  # pip install <pkg>==<version>
+  - DL3016  # npm install <pkg>@<version>
+  # The gh and gcloud vendor repo packages keep their recommends; trimming them
+  # is untested and this image is what every devcontainer builds from.
+  - DL3015
+  # False positive: matches on the name ARG USERNAME/USER_UID, which hold no
+  # credentials.
+  - DL3064

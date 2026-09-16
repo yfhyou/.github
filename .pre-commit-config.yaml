@@ -1,0 +1,42 @@
+---
+repos:
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        language: system
+        entry: shellcheck
+        types: [shell]
+
+  # Divergence from the standard set: this is the only repo in the estate with a
+  # Dockerfile, so it is the only one that needs a local hadolint gate.
+  - repo: local
+    hooks:
+      - id: hadolint
+        name: hadolint
+        language: system
+        entry: hadolint
+        files: (?i)Dockerfile
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.18.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies:
+          - "@commitlint/config-conventional"
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks

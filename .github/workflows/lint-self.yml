@@ -1,0 +1,19 @@
+---
+# This repo defines the reusable lint workflow; this caller holds it to it.
+# Named lint-self.yml because lint.yml is the reusable workflow itself, and
+# it is called by local path so a PR lints against its own version.
+name: Lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      hadolint: true
