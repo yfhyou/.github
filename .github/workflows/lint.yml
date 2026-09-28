@@ -16,6 +16,10 @@ on:
         description: Run hadolint on Dockerfiles
         type: boolean
         default: false
+      ruff:
+        description: Run ruff check on Python, using the caller's own ruff config
+        type: boolean
+        default: false
 
 jobs:
   lint:
@@ -90,6 +94,12 @@ jobs:
         uses: ansible/ansible-lint@v26.8.0
         with:
           requirements_file: ${{ steps.galaxy.outputs.requirements }}
+
+      - name: ruff
+        if: inputs.ruff
+        run: |
+          pip install --quiet ruff
+          ruff check --output-format=github .
 
       - name: hadolint
         if: inputs.hadolint
