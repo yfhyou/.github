@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     git \
     make \
+    ffmpeg \
     curl \
     ca-certificates \
     gnupg \
