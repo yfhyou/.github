@@ -91,7 +91,7 @@ jobs:
 
       - name: ansible-lint
         if: inputs.ansible-lint
-        uses: ansible/ansible-lint@v26.8.0
+        uses: ansible/ansible-lint@v26.9.0
         with:
           requirements_file: ${{ steps.galaxy.outputs.requirements }}
 
