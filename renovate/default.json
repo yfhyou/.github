@@ -29,6 +29,7 @@
     "devcontainer",
     "ansible-galaxy",
     "pip_requirements",
-    "pre-commit"
+    "pre-commit",
+    "custom.regex"
   ]
 }
