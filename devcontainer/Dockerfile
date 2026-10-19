@@ -29,7 +29,12 @@ RUN groupmod --new-name ${USERNAME} "$(getent group ${USER_GID} | cut -d: -f1)" 
     && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-RUN pip3 install --no-cache-dir --break-system-packages \
+# python3-pip and npm pull in Debian's python3-packaging (via python3-wheel and gyp),
+# which pip cannot uninstall (no RECORD file). When a dependency needs a newer one (virtualenv 21.14.11, via pre-commit, needs
+# >=26.3), install it alongside in /usr/local, which shadows /usr/lib on sys.path, so the
+# main install finds it satisfied instead of trying to replace Debian's copy.
+RUN pip3 install --no-cache-dir --break-system-packages --ignore-installed packaging \
+    && pip3 install --no-cache-dir --break-system-packages \
     yamllint \
     ansible-lint \
     pre-commit \
