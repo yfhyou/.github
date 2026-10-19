@@ -59,7 +59,11 @@ RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
     > /etc/apt/sources.list.d/google-cloud-sdk.list \
     && apt-get update && apt-get install -y google-cloud-cli && rm -rf /var/lib/apt/lists/*
 
-# commitlint + Bitwarden CLI
-RUN npm install -g @commitlint/cli @commitlint/config-conventional @bitwarden/cli
+# commitlint + Bitwarden CLI. npm as root keeps the owner IDs stored in each tarball, and
+# @bitwarden/cli bundles files owned by UIDs above 1.5 billion. Rootless Docker cannot map
+# those (only 65536 subordinate IDs) and fails to unpack the layer, so reset ownership in
+# this same layer.
+RUN npm install -g @commitlint/cli @commitlint/config-conventional @bitwarden/cli \
+    && chown -R root:root /usr/local/lib/node_modules
 
 USER ${USERNAME}
