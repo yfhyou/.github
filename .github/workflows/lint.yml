@@ -20,6 +20,10 @@ on:
         description: Run ruff check on Python, using the caller's own ruff config
         type: boolean
         default: false
+      j2lint:
+        description: Run j2lint on Jinja templates (.j2, .jinja, .jinja2)
+        type: boolean
+        default: false
 
 jobs:
   lint:
@@ -100,6 +104,12 @@ jobs:
         run: |
           pip install --quiet ruff
           ruff check --output-format=github .
+
+      - name: j2lint
+        if: inputs.j2lint
+        run: |
+          pip install --quiet j2lint
+          j2lint .
 
       - name: hadolint
         if: inputs.hadolint
