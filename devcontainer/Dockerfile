@@ -50,6 +50,9 @@ RUN curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/d
 RUN curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
     -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
 
+# D2, for homelab's network diagram. Same installer as homelab's render-d2.yml.
+RUN curl -fsSL https://d2lang.com/install.sh | sh -s -- --prefix=/usr/local
+
 # gh CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
