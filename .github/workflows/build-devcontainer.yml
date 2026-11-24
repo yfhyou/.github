@@ -5,7 +5,11 @@ on:
   push:
     branches: [main]
     paths:
-      - devcontainer/Dockerfile
+      - devcontainer/**
+  # apt packages (Ubuntu updates, gh, gcloud) are not pinned and only refresh when their
+  # layers rebuild, so once a month rebuild everything without cache.
+  schedule:
+    - cron: "0 10 1 * *"
   workflow_dispatch:
 
 env:
@@ -40,5 +44,6 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.ubuntu_ver.outputs.version }}
             ${{ env.IMAGE_NAME }}:latest
+          no-cache: ${{ github.event_name == 'schedule' }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline

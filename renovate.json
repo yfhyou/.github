@@ -3,5 +3,14 @@
   "extends": [
     "github>yfhyou/.github//renovate/default.json",
     "customManagers:dockerfileVersions"
+  ],
+  "packageRules": [
+    {
+      "description": "Devcontainer image tools: one grouped PR a month, always reviewed",
+      "matchFileNames": ["devcontainer/**"],
+      "groupName": "devcontainer tools",
+      "schedule": ["before 6am on the first day of the month"],
+      "automerge": false
+    }
   ]
 }
