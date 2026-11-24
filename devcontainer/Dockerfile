@@ -50,8 +50,12 @@ RUN curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/d
 RUN curl -fsSL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
     -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
 
-# D2, for homelab's network diagram. Same installer as homelab's render-d2.yml.
-RUN curl -fsSL https://d2lang.com/install.sh | sh -s -- --prefix=/usr/local
+# D2, for homelab's network diagram. Fetched straight from the release, not via
+# d2lang.com/install.sh, which queries the GitHub API and gets 403 on shared runners.
+# renovate: datasource=github-releases depName=terrastruct/d2
+ARG D2_VERSION=v0.9.0
+RUN curl -fsSL "https://github.com/terrastruct/d2/releases/download/${D2_VERSION}/d2-${D2_VERSION}-linux-amd64.tar.gz" \
+    | tar -xz -C /usr/local/bin --strip-components=2 "d2-${D2_VERSION}/bin/d2"
 
 # gh CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
