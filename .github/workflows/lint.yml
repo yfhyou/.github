@@ -53,8 +53,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: yamllint
+        env:
+          # renovate: datasource=pypi depName=yamllint
+          YAMLLINT_VERSION: 1.38.0
         run: |
-          pip install --quiet yamllint
+          pip install --quiet "yamllint==$YAMLLINT_VERSION"
           CONFIG=".shared/linters/.yamllint"
           [ -f .yamllint ] && CONFIG=".yamllint"
           yamllint -c "$CONFIG" .
@@ -105,14 +108,20 @@ jobs:
 
       - name: ruff
         if: inputs.ruff
+        env:
+          # renovate: datasource=pypi depName=ruff
+          RUFF_VERSION: 0.15.16
         run: |
-          pip install --quiet ruff
+          pip install --quiet "ruff==$RUFF_VERSION"
           ruff check --output-format=github .
 
       - name: j2lint
         if: inputs.j2lint
+        env:
+          # renovate: datasource=pypi depName=j2lint
+          J2LINT_VERSION: 1.3.0
         run: |
-          pip install --quiet j2lint
+          pip install --quiet "j2lint==$J2LINT_VERSION"
           j2lint .
 
       - name: pyright

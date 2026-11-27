@@ -3,7 +3,8 @@
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
-    ":semanticCommits"
+    ":semanticCommits",
+    ":enablePreCommit"
   ],
   "schedule": ["before 6am on monday"],
   "timezone": "America/New_York",
