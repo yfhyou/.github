@@ -9,7 +9,13 @@
   "schedule": ["before 6am on monday"],
   "timezone": "America/New_York",
   "labels": ["dependencies"],
+  "minimumReleaseAge": "14 days",
   "packageRules": [
+    {
+      "description": "Our own images: no wait, and GHCR gives no release timestamps, so the 14-day hold would never lift",
+      "matchPackageNames": ["ghcr.io/yfhyou/**"],
+      "minimumReleaseAge": null
+    },
     {
       "description": "Group all GitHub Actions updates",
       "matchManagers": ["github-actions"],
