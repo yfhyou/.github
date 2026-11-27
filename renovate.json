@@ -2,7 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>yfhyou/.github//renovate/default.json",
-    "customManagers:dockerfileVersions"
+    "customManagers:dockerfileVersions",
+    "customManagers:githubActionsVersions"
   ],
   "packageRules": [
     {
