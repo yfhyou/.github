@@ -1,0 +1,78 @@
+---
+# Weekly estate-wide reference check: linters/check-references.py, against every repo at
+# once, so a file moved in one repo is caught where another repo points at it. It reports
+# by failing, which emails the owner; nothing gates on it. The rule and its reasoning are
+# in homelab's CLAUDE.md, under Cross-Repo Standards.
+name: References
+
+on:
+  schedule:
+    - cron: "0 12 * * 1"  # Monday 07:00/08:00 Eastern, after Renovate's before-6am window
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [linters/check-references.py, .github/workflows/references.yml]
+  pull_request:
+    paths: [linters/check-references.py, .github/workflows/references.yml]
+
+jobs:
+  references:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: estate/github
+          persist-credentials: false
+
+      # GITHUB_TOKEN reads only this repo. REFCHECK_TOKEN is a fine-grained token with
+      # Contents: read on the sibling repos, and nothing else.
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/homelab
+          path: estate/homelab
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/debian-router
+          path: estate/debian-router
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/image-builder-AP3000
+          path: estate/image-builder-AP3000
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/home-server
+          path: estate/home-server
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/homeassistant-config
+          path: estate/homeassistant-config
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - uses: actions/checkout@v7
+        with:
+          repository: yfhyou/openwebui-homelab
+          path: estate/openwebui-homelab
+          token: ${{ secrets.REFCHECK_TOKEN }}
+          persist-credentials: false
+
+      - name: Check references
+        working-directory: estate
+        run: >-
+          python3 github/linters/check-references.py .
+          homelab debian-router image-builder-AP3000 home-server
+          homeassistant-config openwebui-homelab github
